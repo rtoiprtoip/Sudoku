@@ -14,8 +14,7 @@ public class WorkbookLoader {
         try {
             return WorkbookFactory.create(new File("src/main/resources/sudoku.xlsx"));
         } catch (EncryptedDocumentException | IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 }
