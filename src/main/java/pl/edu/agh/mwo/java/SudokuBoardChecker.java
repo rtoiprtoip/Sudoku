@@ -2,7 +2,8 @@ package pl.edu.agh.mwo.java;
 
 import org.apache.poi.ss.usermodel.*;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SudokuBoardChecker {
 
@@ -50,42 +51,41 @@ public class SudokuBoardChecker {
     }
 
     private boolean checkDuplicatesInRow(int[][] sudokuArr, int row) {
-        ArrayList<Integer> tmpArray = new ArrayList<>();
+        Set<Integer> digits = new HashSet<>();
         for (int col = 0; col < 9; col++) {
-            if (tmpArray.contains(sudokuArr[row][col]) && sudokuArr[row][col] != 0) {
-                return true;
-            } else {
-                tmpArray.add(sudokuArr[row][col]);
+            int digit = sudokuArr[row][col];
+            if (digit != 0) {
+                boolean wasPresentBefore = digits.add(digit);
+                if (wasPresentBefore) return true;
             }
         }
-        tmpArray.clear();
         return false;
     }
 
     private boolean checkDuplicatesInColumn(int[][] sudokuArr, int col) {
-        ArrayList<Integer> tmpArray = new ArrayList<>();
+        Set<Integer> digits = new HashSet<>();
         for (int row = 0; row < 9; row++) {
-            if (tmpArray.contains(sudokuArr[row][col]) && sudokuArr[row][col] != 0) {
-                return true;
-            } else {
-                tmpArray.add(sudokuArr[row][col]);
+            int digit = sudokuArr[row][col];
+            if (digit != 0) {
+                boolean wasPresentBefore = digits.add(digit);
+                if (wasPresentBefore) return true;
             }
         }
-        tmpArray.clear();
         return false;
     }
 
     private boolean checkDuplicatesInSmallSquare(int[][] sudokuArr, int startRow, int startCol) {
-        ArrayList<Integer> tmpArray = new ArrayList<>();
+        Set<Integer> digits = new HashSet<>();
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                if (tmpArray.contains(sudokuArr[row + startRow][col + startCol]) && sudokuArr[row + startRow][col + startCol] != 0) {
-                    return true;
-                } else {
-                    tmpArray.add(sudokuArr[row + startRow][col + startCol]);
+
+                int digit = sudokuArr[row + startRow][col + startCol];
+                if (digit != 0) {
+                    boolean wasPresentBefore = digits.add(digit);
+                    if (wasPresentBefore) return true;
                 }
+
             }
-            tmpArray.clear();
         }
         return false;
     }
