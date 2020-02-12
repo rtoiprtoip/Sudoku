@@ -5,7 +5,8 @@ import org.apache.poi.ss.usermodel.*;
 import java.util.ArrayList;
 
 public class SudokuBoardChecker {
-    private Workbook wb;
+    
+    private final Workbook wb;
 
     public SudokuBoardChecker(Workbook workbook) {
         wb = workbook;
