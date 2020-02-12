@@ -5,7 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import java.util.ArrayList;
 
 public class SudokuBoardChecker {
-    
+
     private final Workbook wb;
 
     public SudokuBoardChecker(Workbook workbook) {
@@ -94,13 +94,11 @@ public class SudokuBoardChecker {
         for (Row row : ws) {
             colCounter = 0;
             for (Cell cell : row) {
-                if (cell.getCellType() != CellType.BLANK) {
-                    sudokuArr[rowCounter][colCounter] = (int) cell.getNumericCellValue();
-                    colCounter++;
-                } else {
-                    sudokuArr[rowCounter][colCounter] = 0;
-                    colCounter++;
-                }
+                int value = cell.getCellType() != CellType.BLANK
+                        ? (int) cell.getNumericCellValue()
+                        : 0;
+                sudokuArr[rowCounter][colCounter] = value;
+                colCounter++;
             }
             rowCounter++;
         }
