@@ -15,7 +15,7 @@ public class SudokuBoardChecker {
         Sheet ws = wb.getSheetAt(sheetIndex);
         for (Row row : ws) {
             for (Cell cell : row) {
-                if (!isCellOk(cell.getCellType())) {
+                if (!isCellSyntacticallyCorrect(cell)) {
                     return false;
                 }
             }
@@ -72,8 +72,18 @@ public class SudokuBoardChecker {
 
     }
 
-    private boolean isCellOk(CellType cellType) {
-        return cellType == CellType.NUMERIC || cellType == CellType.BLANK;
+    private boolean isCellSyntacticallyCorrect(Cell cell) {
+        if (cell.getCellType() == CellType.BLANK)
+            return true;
+
+        if (cell.getCellType() == CellType.NUMERIC)
+            return isSingleDigitPositiveNaturalNumber(cell.getNumericCellValue());
+
+        return false;
+    }
+
+    private boolean isSingleDigitPositiveNaturalNumber(double number) {
+        return number > 0 && number < 10 && number == (int) number;
     }
 
     private int[][] SudokuSheetToArray(Sheet ws) {
