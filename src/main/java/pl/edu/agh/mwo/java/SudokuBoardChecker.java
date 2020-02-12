@@ -25,52 +25,69 @@ public class SudokuBoardChecker {
     }
 
     public boolean verifyBoard(int sheetIndex) {
-        if (verifyBoardStructure(sheetIndex)) {
-            Sheet ws = wb.getSheetAt(sheetIndex);
-            ArrayList<Integer> tmpArray = new ArrayList<>();
-            int[][] sudokuArr = SudokuSheetToArray(ws);
-            //check rows
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (tmpArray.contains(sudokuArr[i][j]) && sudokuArr[i][j] != 0) {
-                        return false;
-                    } else {
-                        tmpArray.add(sudokuArr[i][j]);
-                    }
-                }
-                tmpArray.clear();
-            }
-            //check columns
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (tmpArray.contains(sudokuArr[j][i]) && sudokuArr[j][i] != 0) {
-                        return false;
-                    } else {
-                        tmpArray.add(sudokuArr[j][i]);
-                    }
-                }
-                tmpArray.clear();
-            }
-            //check 3x3 fields
-            for (int ii = 0; ii < 9; ii += 3) {
-                for (int jj = 0; jj < 9; jj += 3) {
-                    for (int i = 0; i < 3; i++) {
-                        for (int j = 0; j < 3; j++) {
-                            if (tmpArray.contains(sudokuArr[j + jj][i + ii]) && sudokuArr[j + jj][i + ii] != 0) {
-                                return false;
-                            } else {
-                                tmpArray.add(sudokuArr[j + jj][i + ii]);
-                            }
-                        }
-                        tmpArray.clear();
-                    }
-                }
-            }
-            return true;
-        } else {
-            return false;
+        return verifyBoardStructure(sheetIndex) && verifyBoardContent(sheetIndex);
+    }
+
+    private boolean verifyBoardContent(int sheetIndex) {
+        Sheet ws = wb.getSheetAt(sheetIndex);
+        int[][] sudokuArr = SudokuSheetToArray(ws);
+
+        for (int row = 0; row < 9; row++) {
+            if (checkDuplicatesInRow(sudokuArr, row)) return false;
         }
 
+        for (int column = 0; column < 9; column++) {
+            if (checkDuplicatesInColumn(sudokuArr, column)) return false;
+        }
+
+        for (int startColumn = 0; startColumn < 9; startColumn += 3) {
+            for (int startRow = 0; startRow < 9; startRow += 3) {
+                if (checkDuplicatesInSmallSquare(sudokuArr, startRow, startColumn)) return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkDuplicatesInRow(int[][] sudokuArr, int row) {
+        ArrayList<Integer> tmpArray = new ArrayList<>();
+        for (int col = 0; col < 9; col++) {
+            if (tmpArray.contains(sudokuArr[row][col]) && sudokuArr[row][col] != 0) {
+                return true;
+            } else {
+                tmpArray.add(sudokuArr[row][col]);
+            }
+        }
+        tmpArray.clear();
+        return false;
+    }
+
+    private boolean checkDuplicatesInColumn(int[][] sudokuArr, int col) {
+        ArrayList<Integer> tmpArray = new ArrayList<>();
+        for (int row = 0; row < 9; row++) {
+            if (tmpArray.contains(sudokuArr[row][col]) && sudokuArr[row][col] != 0) {
+                return true;
+            } else {
+                tmpArray.add(sudokuArr[row][col]);
+            }
+        }
+        tmpArray.clear();
+        return false;
+    }
+
+    private boolean checkDuplicatesInSmallSquare(int[][] sudokuArr, int startRow, int startCol) {
+        ArrayList<Integer> tmpArray = new ArrayList<>();
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (tmpArray.contains(sudokuArr[row + startRow][col + startCol]) && sudokuArr[row + startRow][col + startCol] != 0) {
+                    return true;
+                } else {
+                    tmpArray.add(sudokuArr[row + startRow][col + startCol]);
+                }
+            }
+            tmpArray.clear();
+        }
+        return false;
     }
 
     private boolean isCellSyntacticallyCorrect(Cell cell) {
